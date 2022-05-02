@@ -1,39 +1,46 @@
-const { assert } = require('chai');
-const { testOptional, ListNode } = require('../extensions/index.js');
-const { removeKFromList } = require('../src/remove-from-list.js');
+const { NotImplementedError } = require('../extensions/index.js');
 
-it.optional = testOptional;
+// const { ListNode } = require('../extensions/list-node.js');
 
-Object.freeze(assert);
+/**
+ * Given a singly linked list of integers l and an integer k,
+ * remove all elements from list l that have a value equal to k.
+ *
+ * @param {List} l
+ * @param {Number} k
+ * @return {List}
+ *
+ * @example
+ * For l = [3, 1, 2, 3, 4, 5] and k = 3,
+ * the output should be [1, 2, 4, 5]
+ *
+ * Singly - linked lists are already defined using interface
+ * class ListNode {
+ *   constructor(x) {
+ *     this.value = x;
+ *     this.next = null;
+ *   }
+ * }
+ */
+ function removeKFromList(list, k) {
+  if (list.value === k) {
+    return removeKFromList(list.next, k);
+  }
 
-function convertArrayToList(arr) {
-  return arr.reverse().reduce((acc, cur) => {
-    if (acc) {
-      const node = new ListNode(cur);
-      node.next = acc;
-      return node;
+  let current = list.next;
+  let prev = list;
+
+  while (current) {
+    if (current.value === k) {
+      prev.next = current.next;
+    } else {
+      prev = current;
     }
-
-    return new ListNode(cur);
-  }, null);
+    current = current.next;
+  }
+  return list;  
 }
 
-describe('Remove from list', () => {
-  it.optional('should return the list without values equal to k', () => {
-    const initial = convertArrayToList([3, 1, 2, 3, 4, 5]);
-    const expected = convertArrayToList([1, 2, 4, 5]);
-    assert.deepEqual(removeKFromList(initial, 3), expected);
-  });
-
-  it.optional('should return the list without values equal to k (with double k)', () => {
-    const initial = convertArrayToList([1, 2, 3, 3, 4, 5]);
-    const expected = convertArrayToList([1, 2, 4, 5]);
-    assert.deepEqual(removeKFromList(initial, 3), expected);
-  });
-
-  it.optional('should return the list without values equal to k (with k at the end)', () => {
-    const initial = convertArrayToList([1, 2, 3]);
-    const expected = convertArrayToList([1, 2]);
-    assert.deepEqual(removeKFromList(initial, 3), expected);
-  });
-});
+module.exports = {
+  removeKFromList
+};
